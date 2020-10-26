@@ -16,7 +16,7 @@ def get_data(files):
             s = ""
             e = 0
             for line in lines:
-                strippedline = re.sub('[^0-9a-zA-Z ]+', '', line)
+                strippedline = re.sub('[^0-9a-zA-Z. ]+', '', line)
                 #if (strippedline != \"\") and (strippedline != \"\\n\") and (not re.match('^[0-9a-zA-Z]? *$', strippedline)):
                 if re.match('[0-9a-zA-Z]?abstract[0-9a-zA-Z ]*|abstract', strippedline):
                     if s != "":
@@ -33,7 +33,7 @@ def get_data(files):
                         summaries.append([name, text_num, e])
                     s = ""
                     e = 1
-                elif (strippedline != "") and (strippedline != "\n") and (not re.match('^[0-9a-zA-Z]* *$', strippedline)):
+                elif (strippedline != "") and (strippedline != "\n") and (not re.match('^[0-9a-zA-Z.]* *$', strippedline)):
                     s = strippedline
                 else:
                     if e == 1:
@@ -61,5 +61,5 @@ def random_sample(texts_df, summaries_df):
     print(texts_df["text"][i])
     print(summaries_df["text_num"][i])
     print(summaries_df["text"][i])
-    pass
+    return (texts_df["text"][i], summaries_df["text"][i])
 
