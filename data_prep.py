@@ -3,9 +3,6 @@ import re
 import pandas as pd
 from random import randint
 
-#path_to_data = "CNN_corpus"  # put in notebook
-#files = glob.glob("CNN_corpus/*")
-
 def get_data(files):
     summaries = []
     texts = []
@@ -16,16 +13,15 @@ def get_data(files):
             s = ""
             e = 0
             for line in lines:
-                strippedline = re.sub('[^0-9a-zA-Z. ]+', '', line)
-                #if (strippedline != \"\") and (strippedline != \"\\n\") and (not re.match('^[0-9a-zA-Z]? *$', strippedline)):
-                if re.match('[0-9a-zA-Z]?abstract[0-9a-zA-Z ]*|abstract', strippedline):
+                strippedline = re.sub('[^0-9a-zA-Z. ]+', '', line) 
+                if re.match('[0-9a-zA-Z]?abstract[0-9a-zA-Z ]*|abstract', strippedline): # add texts/summaries to the dfs
                     if s != "":
                         texts.append([name, text_num, s])
                     elif e != 0:
                         texts.append([name, text_num, e])
                     text_num += 1
-                    s = ""
-                    e = 1
+                    s = ""  
+                    e = 1  # e set to make sure empty lines are only added when abstract/text is empty otherwise (to keep counting even)
                 elif re.match('[0-9a-zA-Z]?article[0-9a-zA-Z ]*|article', strippedline):
                     if s != "":
                         summaries.append([name, text_num, s])
@@ -43,7 +39,7 @@ def get_data(files):
     summaries_df = pd.DataFrame(summaries, columns = ["filename", "text_num", "text"])
     return texts_df, summaries_df
 
-def check_data(texts_df, summaries_df):
+def check_data(texts_df, summaries_df): # check whether every text in texts_df has a corresponding summary in summaries_df
     for i in range(0, len(summaries_df)):
         if texts_df["text_num"][i] != summaries_df["text_num"][i]:
             print("Problem:")
@@ -52,14 +48,13 @@ def check_data(texts_df, summaries_df):
             print(texts_df["text"][i])
             print(summaries_df["text_num"][i])
             print(summaries_df["text"][i])
+    print("check complete")
     pass
                    
 def random_sample(texts_df, summaries_df):
     i = randint(0, len(texts_df))
-    print(texts_df["filename"][i])
-    print(texts_df["text_num"][i])
-    print(texts_df["text"][i])
-    print(summaries_df["text_num"][i])
-    print(summaries_df["text"][i])
+    print("file:", texts_df["filename"][i])
+    print("article:", texts_df["text"][i])
+    print("summary:", summaries_df["text"][i])
     return (texts_df["text"][i], summaries_df["text"][i])
 
