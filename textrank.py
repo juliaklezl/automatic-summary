@@ -76,22 +76,6 @@ def get_summary(textstrings, embeddings, len_sum): # create graph based on simil
             summary = " ".join(sents[:len_sum])
         summaries.append(summary)
     return summaries
-
-#def get_summary(textstrings, embeddings, len_sum): # create graph based on similarities, apply pagerank algorithm, and pick n most important sentences
-#    summaries = []
-#    for textstring in textstrings:
-#        sm, sents = similarity_matrix(textstring, embeddings)
-#        graph = nx.from_numpy_array(sm)
-#        scores = nx.pagerank(graph)
-#        scores_sents = ((scores[i],s) for i,s in enumerate(sents))
-#        ranked_sentences = sorted(scores_sents, reverse=True)
-#        summary = ""
-#        for i in range(len_sum):
-#            if len(ranked_sentences) > i:  
-#                summary += ranked_sentences[i][1] + " "
-#        print(summary)
-#        summaries.append(summary)
-#    return summaries
     
 
     
