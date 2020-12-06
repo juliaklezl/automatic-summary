@@ -10,7 +10,7 @@ import re
 from sklearn.metrics.pairwise import cosine_similarity
 import networkx as nx
 
-# this program is based on Prateek Joshi's tutorial https://www.analyticsvidhya.com/blog/2018/11/introduction-text-summarization-textrank-python/. Individual lines are even directly copied. 
+# this program is based on the algorithm outlined in Prateek Joshi's tutorial https://www.analyticsvidhya.com/blog/2018/11/introduction-text-summarization-textrank-python/. 
 
 def get_sentence_list(textstring):  # split text into sentences, get a list without stopwords for the similarity calculation and a complete list for assembling the summary in the end
     sentences = sent_tokenize(textstring)
@@ -38,7 +38,9 @@ def sent_embeddings(sent_list, embed_dict): # get sentence embeddings by taking 
     sentence_vectors = []
     for s in sent_list:
         if len(s) > 1: 
-            v = sum([embed_dict.get(w, np.zeros((100,))) for w in s.split()])/(len(s.split())+0.001)  
+            sent_vectors = [embed_dict.get(w, np.zeros((100,))) for w in s.split()]
+            num_words = len(s.split())
+            v = sum(sent_vectors)/(num_words)
         else:  
             v = np.zeros((100,)) 
         sentence_vectors.append(v)
@@ -51,20 +53,45 @@ def similarity_matrix(textstring, embeddings): # calculate cosine similarity bet
     for i in range(len(sents)):
         for j in range(len(sents)):
             if i != j:  
-                sim_mat[i][j] = cosine_similarity(embeds[i].reshape(1,100), embeds[j].reshape(1,100))
+                e_i = embeds[i].reshape(1,100)
+                e_j = embeds[j].reshape(1,100)
+                sim_mat[i][j] = cosine_similarity(e_i, e_j)
     return sim_mat, sents
 
-def get_summary(textstring, embeddings, len_sum): # create graph based on similarities, apply pagerank algorithm, and pick n most important sentences
-    sm, sents = similarity_matrix(textstring, embeddings)
-    nx_graph = nx.from_numpy_array(sm)
-    scores = nx.pagerank(nx_graph)
-    ranked_sentences = sorted(((scores[i],s) for i,s in enumerate(sents)), reverse=True)
-    summary = ""
-    for i in range(len_sum):
-        if len(ranked_sentences) >= len_sum:
-            summary += ranked_sentences[i][1] + " "
-    print(summary)
-    return summary
+def get_summary(textstrings, embeddings, len_sum): # create graph based on similarities, apply pagerank algorithm, and pick n most important sentences
+    summaries = []
+    for textstring in textstrings:
+        sm, sents = similarity_matrix(textstring, embeddings)
+        graph = nx.from_numpy_array(sm)
+        try:
+            scores = nx.pagerank(graph)
+            scores_sents = ((scores[i],s) for i,s in enumerate(sents))
+            ranked_sentences = sorted(scores_sents, reverse=True)
+            summary = ""
+            for i in range(len_sum):
+                if len(ranked_sentences) > i:  
+                    summary += ranked_sentences[i][1] + " "
+            print(summary)
+        except:   # if pagerank doesn't converge, first n sentences are taken as summary
+            summary = " ".join(sents[:len_sum])
+        summaries.append(summary)
+    return summaries
+
+#def get_summary(textstrings, embeddings, len_sum): # create graph based on similarities, apply pagerank algorithm, and pick n most important sentences
+#    summaries = []
+#    for textstring in textstrings:
+#        sm, sents = similarity_matrix(textstring, embeddings)
+#        graph = nx.from_numpy_array(sm)
+#        scores = nx.pagerank(graph)
+#        scores_sents = ((scores[i],s) for i,s in enumerate(sents))
+#        ranked_sentences = sorted(scores_sents, reverse=True)
+#        summary = ""
+#        for i in range(len_sum):
+#            if len(ranked_sentences) > i:  
+#                summary += ranked_sentences[i][1] + " "
+#        print(summary)
+#        summaries.append(summary)
+#    return summaries
     
 
     

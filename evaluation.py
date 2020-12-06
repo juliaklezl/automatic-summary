@@ -13,10 +13,7 @@ def rouge_overall_textrank(text_df, sum_df, embeddings):
     rouge = Rouge()
     texts = [t for t in text_df["text"]]
     sums = [s for s in sum_df["text"]]
-    pred_sums = []
-    for t in texts:
-        s = textrank.get_summary(t, embeddings, 3)
-        pred_sums.append(s)
+    pred_sums = textrank.get_summary(texts, embeddings, 3)
     scores = rouge.get_scores(pred_sums, sums, avg = True)
     print(scores)
     return scores
@@ -25,10 +22,7 @@ def rouge_overall_cluster(text_df, sum_df):
     rouge = Rouge()
     texts = [t for t in text_df["text"]]
     sums = [s for s in sum_df["text"]]
-    pred_sums = []
-    for t in texts:
-        s = cluster.get_summary(t, 3)
-        pred_sums.append(s)
+    pred_sums = cluster.get_summary(texts, 3)
     scores = rouge.get_scores(pred_sums, sums, avg = True)
     print(scores)
     return scores
