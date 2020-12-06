@@ -7,7 +7,7 @@ Use the "run" notebook for running everything. In addition to the usual packages
 Data: 
 The data I use is a small part of the CNN portion of the CNN-DailyMail Dataset (https://github.com/abisee/cnn-dailymail). I only used 3 of the files (3000 texts) for testing and evaluating my program (for time/efficiency reasons). These are in the data/texts folder of this repo. The full version of the dataset (in an already tokenized version) can be downloaded here: https://github.com/JafferWilson/Process-Data-of-CNN-DailyMail. 
 
-The pretrained GloVe embeddings can be downloaded here https://nlp.stanford.edu/projects/glove/, I used the 6B version trained on Wikipedia and Gigaword 5. 
+The pretrained GloVe embeddings can be downloaded here https://nlp.stanford.edu/projects/glove/, I used the 6B version with 100 dimensions trained on Wikipedia and Gigaword 5. 
 
 
 
